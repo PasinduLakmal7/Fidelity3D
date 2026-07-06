@@ -1,0 +1,1 @@
+// ImageUploadBox component
