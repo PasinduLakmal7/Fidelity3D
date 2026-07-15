@@ -1,1 +1,0 @@
-# material/texture improvement logic
