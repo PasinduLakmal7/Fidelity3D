@@ -1,1 +1,0 @@
-# download final GLB/OBJ

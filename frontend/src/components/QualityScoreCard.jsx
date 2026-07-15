@@ -1,1 +1,0 @@
-// QualityScoreCard component

@@ -1,1 +1,0 @@
-// VisionReportCard component
