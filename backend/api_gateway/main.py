@@ -11,7 +11,28 @@ from api_gateway.core.celery_config import celery_app
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
+import os
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+
 app = FastAPI(title="Fidelity3D API Gateway")
+
+# Configure CORS so the Next.js frontend can communicate with the backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/files/{job_id}/{filename}")
+async def get_file(job_id: str, filename: str):
+    outputs_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "outputs")
+    file_path = os.path.join(outputs_dir, job_id, filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(file_path)
 
 @app.post("/upload")
 async def upload_images(
@@ -90,8 +111,10 @@ async def get_status(job_id: str, db: Session = Depends(get_db)):
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
         
+    output_url = f"http://127.0.0.1:8000/files/{job_id}/final_model.glb" if job.output_file_path else None
+    
     return {
         "job_id": job.job_id,
         "status": job.status.value,
-        "output_file_path": job.output_file_path
+        "output_file_path": output_url
     }

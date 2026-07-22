@@ -25,9 +25,7 @@ def process_animation_job(job_id: str, is_premium: bool):
         input_file = f"outputs/{job_id}/highpoly.obj" if is_premium else f"outputs/{job_id}/lowpoly.obj"
         apply_animation(input_file, output_file, is_premium)
         
-        # Simulate saving the final 3D file (.glb)
-        with open(output_file, "w") as f:
-            f.write("Mock 3D GLB Data (Animated)")
+        # The Rig Engine now actually downloads a real animated .glb file
             
         # Update Job details
         job.output_file_path = output_file

@@ -26,9 +26,9 @@ def process_free_job(job_id: str):
         from lowpoly_worker.triposr_engine import generate_3d_mesh
         generate_3d_mesh(job.image_paths, f"outputs/{job_id}/lowpoly.obj")
         
-        # 3. Update DB (temporarily)
-        job.status = JobStatus.FREE_COMPLETED
-        db.commit()
+        # 3. Keep status at FREE_PROCESSING - the animation_worker will set FREE_COMPLETED
+        #    after it actually creates the .glb file
+        print(f"[LowpolyWorker] Job {job_id}: TripoSR done. Sending to AnimationWorker...")
         
         # 4. Send to Animation Worker (is_premium=False)
         celery_app.send_task("process_animation_job", args=[job_id, False], queue="animation_queue")
