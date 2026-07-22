@@ -14,7 +14,7 @@ class JobStatus(enum.Enum):
 class Job(Base):
     __tablename__ = "jobs"
 
-    id = Column(Integer, primary key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     job_id = Column(String, unique=True, index=True, nullable=False)
     status = Column(Enum(JobStatus), default=JobStatus.FREE_PENDING, nullable=False)
     image_paths = Column(String, nullable=False)
